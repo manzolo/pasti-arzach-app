@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/PastiArzach/PastiArzach.iml" filepath="$PROJECT_DIR$/PastiArzach/PastiArzach.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PastiArzachProject.iml" filepath="$PROJECT_DIR$/PastiArzachProject.iml" />
+    </modules>
+  </component>
+</project>
+
