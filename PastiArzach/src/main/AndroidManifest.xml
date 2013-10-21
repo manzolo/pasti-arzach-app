@@ -5,12 +5,13 @@
     android:versionName="1.2011">
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -42,13 +43,28 @@
             </intent-filter>
         </activity>
 
+
+        <receiver
+            android:name="it.manzolo.receiver.BootReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="it.manzolo.pastiarzach.service.ScheduleNotificationService" android:enabled="true"></service>
+        <service android:name="it.manzolo.pastiarzach.service.CheckNotificationService"></service>
+
+
         <receiver android:name="it.manzolo.pastiarzach.service.NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
 
-        <service android:name="it.manzolo.pastiarzach.service.NotificationService"></service>
+        <service android:name="it.manzolo.pastiarzach.service.NotificationService" />
 
     </application>
 

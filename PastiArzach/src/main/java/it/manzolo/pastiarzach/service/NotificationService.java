@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
@@ -13,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -78,12 +80,16 @@ public class NotificationService extends Service {
                     String formattedDate = df.format(calendar.getTime());
                     int day = calendar.get(Calendar.DAY_OF_WEEK);
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                    int minute = Calendar.getInstance().get(Calendar.MINUTE);
 
                     //Log.i("Controllo menu","Controllo");
                     //Solo se e' martedi o giovedi si cerca il menu
-                    if ((hour >= 9 && hour <= 11) && (day == Calendar.THURSDAY || day == Calendar.TUESDAY)) {
+                    Log.i("Controllo orario","Controllo in corso");
+                    //if ((day == Calendar.THURSDAY || day == Calendar.TUESDAY) && (hour >= ScheduleOptions.INTERVAL_ORA_INIZIO && minute >=ScheduleOptions.INTERVAL_MINUTO_INIZIO && hour <= ScheduleOptions.INTERVAL_ORA_FINE && minute <=ScheduleOptions.INTERVAL_MINUTO_FINE)) {
+                    if ((day == Calendar.MONDAY ) && (hour >= ScheduleOptions.INTERVAL_ORA_INIZIO && minute >=ScheduleOptions.INTERVAL_MINUTO_INIZIO && hour <= ScheduleOptions.INTERVAL_ORA_FINE && minute <=ScheduleOptions.INTERVAL_MINUTO_FINE)) {
+                        ScheduleOptions.INTERVAL = 0;
                         //if ((hour >= 19 && hour <=20 ) && (day==Calendar.SUNDAY || day==Calendar.MONDAY)){
-                        //Log.i("Controllo menu","Si");
+                        Log.i("Controllo menu","ECCOCI");
                         Ordine ordine = new Ordine();
                         DbNotificheAdapter dbNotificheAdapter = new DbNotificheAdapter(NotificationService.this);
                         dbNotificheAdapter.open();
@@ -100,7 +106,7 @@ public class NotificationService extends Service {
                         }
 
                     } else {
-
+                        Log.i("Controllo orario","Non è il momento di controllare");
                     }
                     stopSelf();
                 }
@@ -144,6 +150,7 @@ public class NotificationService extends Service {
             notificationBuilder.setWhen(System.currentTimeMillis());
 
             // Icona della notifica
+
             notificationBuilder.setSmallIcon(R.drawable.menu);
 
             notificationBuilder.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
