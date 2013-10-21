@@ -26,13 +26,12 @@ public class ScheduleNotificationService extends Service {
      * you * probably won't, either.
      */
     private void handleIntent(Intent intent) {
-        Log.i("Handle", "Service");
+        Log.i("ManzoloScheduleService", "Start");
         // do the actual work, in a separate thread
         new PollTask().execute();
     }
 
     private class PollTask extends AsyncTask<Void, Void, Void> {
-        protected static final int SIMPLE_NOTIFICATION_ID = 999;
 
         /**
          * * This is where YOU do YOUR work. There's nothing for me to write
@@ -47,9 +46,9 @@ public class ScheduleNotificationService extends Service {
             Runnable r = new Runnable() {
                 public void run() {
                     Calendar calendar = Calendar.getInstance();
-                    Log.i("Impostazione","Schedulazione in corso");
+                    Log.i("ManzoloSet", "Schedulazione impostata alle " + ScheduleOptions.ORA + " e " + ScheduleOptions.MINUTO);
 
-                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+                    //calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
                     calendar.set(Calendar.HOUR_OF_DAY, ScheduleOptions.ORA);
                     calendar.set(Calendar.MINUTE, ScheduleOptions.MINUTO);
                     calendar.set(Calendar.SECOND, ScheduleOptions.SECONDO);

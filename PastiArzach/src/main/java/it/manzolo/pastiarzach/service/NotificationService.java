@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
@@ -14,7 +13,6 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -36,7 +34,7 @@ public class NotificationService extends Service {
      */
     @Override
     public IBinder onBind(Intent intent) {
-        Log.i("StartService", "Bind");
+        Log.i("ManzoloStartService", "Bind");
         return null;
     }
 
@@ -81,15 +79,9 @@ public class NotificationService extends Service {
                     int day = calendar.get(Calendar.DAY_OF_WEEK);
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                     int minute = Calendar.getInstance().get(Calendar.MINUTE);
-
-                    //Log.i("Controllo menu","Controllo");
                     //Solo se e' martedi o giovedi si cerca il menu
-                    Log.i("Controllo orario","Controllo in corso");
-                    //if ((day == Calendar.THURSDAY || day == Calendar.TUESDAY) && (hour >= ScheduleOptions.INTERVAL_ORA_INIZIO && minute >=ScheduleOptions.INTERVAL_MINUTO_INIZIO && hour <= ScheduleOptions.INTERVAL_ORA_FINE && minute <=ScheduleOptions.INTERVAL_MINUTO_FINE)) {
-                    if ((day == Calendar.MONDAY ) && (hour >= ScheduleOptions.INTERVAL_ORA_INIZIO && minute >=ScheduleOptions.INTERVAL_MINUTO_INIZIO && hour <= ScheduleOptions.INTERVAL_ORA_FINE && minute <=ScheduleOptions.INTERVAL_MINUTO_FINE)) {
-                        ScheduleOptions.INTERVAL = 0;
-                        //if ((hour >= 19 && hour <=20 ) && (day==Calendar.SUNDAY || day==Calendar.MONDAY)){
-                        Log.i("Controllo menu","ECCOCI");
+                    if ((day == Calendar.THURSDAY || day == Calendar.TUESDAY) && (hour >= ScheduleOptions.INTERVAL_ORA_INIZIO && minute >= ScheduleOptions.INTERVAL_MINUTO_INIZIO && hour <= ScheduleOptions.INTERVAL_ORA_FINE && minute <= ScheduleOptions.INTERVAL_MINUTO_FINE)) {
+                        Log.i("ManzoloControllo menu", "Controllo ordine");
                         Ordine ordine = new Ordine();
                         DbNotificheAdapter dbNotificheAdapter = new DbNotificheAdapter(NotificationService.this);
                         dbNotificheAdapter.open();
@@ -97,8 +89,9 @@ public class NotificationService extends Service {
                         dbNotificheAdapter.close();
 
                         if (ordine.isDisponibile() && ordine.isAperto() && !alreadyMenuNotify) {
-                            //Log.i("arzach", "Service running");
+                            Log.i("ManzoloControllo menu", "Lanciata notifica ");
                             NotifyMenu();
+                            CheckNotificationService.stopService();
 
                             dbNotificheAdapter.open();
                             dbNotificheAdapter.createNotification(formattedDate);
@@ -106,7 +99,7 @@ public class NotificationService extends Service {
                         }
 
                     } else {
-                        Log.i("Controllo orario","Non è il momento di controllare");
+                        Log.i("ManzoloControllo orario", "Non e' il momento di controllare");
                     }
                     stopSelf();
                 }

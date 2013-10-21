@@ -4,21 +4,33 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import java.util.Calendar;
 
 public class CheckNotificationService extends Service {
+    static PollTask pollTask;
+    static PendingIntent pi;
+    static AlarmManager am;
 
     /**
      * * Simply return null, since our Service will not be communicating with *
      * any other components. It just does its work silently.
      */
+    public static void stopService() {
+        if (pollTask != null) {
+            pollTask.cancel(true);
+        }
+
+        if (am != null && pi != null) {
+            am.cancel(pi);
+            ;
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -30,13 +42,13 @@ public class CheckNotificationService extends Service {
      * you * probably won't, either.
      */
     private void handleIntent(Intent intent) {
-        Log.i("Handle", "Service");
+        Log.i("ManzoloCheckNotification", "Handle Service");
         // do the actual work, in a separate thread
-        new PollTask().execute();
+        pollTask = new PollTask();
+        pollTask.execute();
     }
 
     private class PollTask extends AsyncTask<Void, Void, Void> {
-        protected static final int SIMPLE_NOTIFICATION_ID = 999;
 
         /**
          * * This is where YOU do YOUR work. There's nothing for me to write
@@ -51,12 +63,11 @@ public class CheckNotificationService extends Service {
             Runnable r = new Runnable() {
                 public void run() {
                     Calendar calendar = Calendar.getInstance();
-                    Log.i("Controllo","Controllo schedulato ogni " + ScheduleOptions.INTERVAL + " minuti");
                     //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(CheckNotificationService.this);
                     //int minutes = prefs.getInt("interval", ScheduleOptions.INTERVAL);
-                    AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    am = (AlarmManager) getSystemService(ALARM_SERVICE);
                     Intent i = new Intent(CheckNotificationService.this, NotificationService.class);
-                    PendingIntent pi = PendingIntent.getService(CheckNotificationService.this, 0, i, 0);
+                    pi = PendingIntent.getService(CheckNotificationService.this, 0, i, 0);
                     am.cancel(pi);
                     // by my own convention, minutes <= 0 means notifications are disabled
 
@@ -67,11 +78,20 @@ public class CheckNotificationService extends Service {
                                 minutes * 60 * 1000, pi);
                     }
                     */
-                    if (ScheduleOptions.INTERVAL > 0) {
-                        am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                                SystemClock.elapsedRealtime() + ScheduleOptions.INTERVAL * 60 * 1000,
-                                ScheduleOptions.INTERVAL * 60 * 1000, pi);
+                    int day = calendar.get(Calendar.DAY_OF_WEEK);
+                    if (day == Calendar.THURSDAY || day == Calendar.TUESDAY) {
+                        if (ScheduleOptions.INTERVAL > 0) {
+                            Log.i("ManzoloControllo", "Controllo schedulato ogni " + ScheduleOptions.INTERVAL + " minuti");
+                            am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                                    SystemClock.elapsedRealtime() + ScheduleOptions.INTERVAL * 60 * 1000,
+                                    ScheduleOptions.INTERVAL * 60 * 1000, pi);
+
+                        }
+                    } else {
+                        Log.i("ManzoloControllo orario", "Oggi non si controlla");
+                        CheckNotificationService.stopService();
                     }
+
 
                     stopSelf();
                 }
@@ -79,6 +99,7 @@ public class CheckNotificationService extends Service {
 
             Thread t = new Thread(r);
             t.start();
+
             return null;
         }
 
@@ -94,7 +115,7 @@ public class CheckNotificationService extends Service {
          */
         @Override
         protected void onPostExecute(Void result) {
-            // handle your data
+            //Log.i("PollTask","Post execute");
             stopSelf();
         }
     }
@@ -126,6 +147,7 @@ public class CheckNotificationService extends Service {
      */
     public void onDestroy() {
         super.onDestroy();
+
     }
 
 }

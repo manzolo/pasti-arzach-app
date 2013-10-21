@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -31,7 +32,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -41,7 +41,7 @@ import it.manzolo.pastiarzach.Dipendente;
 import it.manzolo.pastiarzach.Ordine;
 import it.manzolo.pastiarzach.PrezziPasti;
 import it.manzolo.pastiarzach.R;
-import it.manzolo.pastiarzach.database.DbNotificheAdapter;
+import it.manzolo.pastiarzach.service.CheckNotificationService;
 import it.manzolo.utils.Internet;
 import it.manzolo.utils.MessageBox;
 import it.manzolo.utils.Parameters;
@@ -134,6 +134,9 @@ public class LoginActivity extends Activity {
                     if (ordine.isAperto()) {
                         tv = new CheckBox(this);
                         ((CheckBox) tv).setTextSize(15);
+                        //Si stoppa la notifica per oggi
+                        Log.i("ManzoloNessuna notifica", "Menu visionato dall'utente");
+                        CheckNotificationService.stopService();
                     } else {
                         tv = new TextView(this);
                         ((TextView) tv).setTextSize(15);
@@ -269,6 +272,7 @@ public class LoginActivity extends Activity {
                             //Si esegue la POST alla pagina che raccoglie gli ordini
                             httpclient.execute(httppost);
 
+                            /*
                             //Si ferma la notifica per oggi
                             Calendar calendar = Calendar.getInstance();
                             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALY);
@@ -284,7 +288,7 @@ public class LoginActivity extends Activity {
                                 dbNotificheAdapter.createNotification(formattedDate);
                                 dbNotificheAdapter.close();
                             }
-
+                            */
                         } catch (ClientProtocolException e) {
                             new MessageBox(
                                     LoginActivity.this,

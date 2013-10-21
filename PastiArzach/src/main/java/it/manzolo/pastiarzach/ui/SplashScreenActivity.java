@@ -7,7 +7,7 @@ import android.os.Handler;
 
 import it.manzolo.pastiarzach.R;
 import it.manzolo.pastiarzach.service.NetworkChangeReceiver;
-import it.manzolo.pastiarzach.service.NotificationService;
+import it.manzolo.pastiarzach.service.ScheduleNotificationService;
 import it.manzolo.pastiarzach.util.SystemUiHider;
 import it.manzolo.utils.Internet;
 
@@ -28,7 +28,7 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        startService(new Intent(this, NotificationService.class));
+        //startService(new Intent(this, NotificationService.class));
         new Handler().postDelayed(new Runnable() {
             /*
              * Showing splash screen with a timer. This will be useful when you
@@ -39,6 +39,9 @@ public class SplashScreenActivity extends Activity {
                 // This method will be executed once the timer is over
                 // Start your app main activity
                 NetworkChangeReceiver.ACTIVE = Internet.isNetworkAvailable(getApplicationContext());
+
+                Intent scheduleServiceIntent = new Intent(SplashScreenActivity.this, ScheduleNotificationService.class);
+                startService(scheduleServiceIntent);
 
                 Intent i = new Intent(SplashScreenActivity.this, MainActivity.class);
                 startActivity(i);
