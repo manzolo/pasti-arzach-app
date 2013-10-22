@@ -18,12 +18,14 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import it.manzolo.pastiarzach.Ordine;
 import it.manzolo.pastiarzach.R;
 import it.manzolo.pastiarzach.database.DbNotificheAdapter;
 import it.manzolo.pastiarzach.ui.MainActivity;
+import it.manzolo.utils.DateFunctions;
 
 public class NotificationService extends Service {
     private WakeLock mWakeLock;
@@ -73,14 +75,25 @@ public class NotificationService extends Service {
             // do stuff!
             Runnable r = new Runnable() {
                 public void run() {
+
                     Calendar calendar = Calendar.getInstance();
-                    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALY);
-                    String formattedDate = df.format(calendar.getTime());
+
                     int day = calendar.get(Calendar.DAY_OF_WEEK);
                     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                     int minute = Calendar.getInstance().get(Calendar.MINUTE);
-                    //Solo se e' martedi o giovedi si cerca il menu
-                    if ((day == Calendar.THURSDAY || day == Calendar.TUESDAY) && (hour >= ScheduleOptions.INTERVAL_ORA_INIZIO && minute >= ScheduleOptions.INTERVAL_MINUTO_INIZIO && hour <= ScheduleOptions.INTERVAL_ORA_FINE && minute <= ScheduleOptions.INTERVAL_MINUTO_FINE)) {
+
+                    Date oraFine = DateFunctions.parseDate(ScheduleOptions.INTERVAL_ORA_FINE + ":" + ScheduleOptions.INTERVAL_MINUTO_FINE);
+                    Date oraInizio = DateFunctions.parseDate(ScheduleOptions.INTERVAL_ORA_INIZIO + ":" + ScheduleOptions.INTERVAL_MINUTO_INIZIO);
+
+                    Date now = DateFunctions.parseDate(hour + ":" + minute);
+                    if (now.after(oraFine)) {
+                        Log.i("ManzoloControllo orario", "E' già passato il momento di controllare");
+                        CheckNotificationService.stopService();
+                        return;
+                    }
+                    if (day == Calendar.THURSDAY || day == Calendar.TUESDAY && oraInizio.before(now) && oraFine.after(now)) {
+                        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALY);
+                        String formattedDate = df.format(calendar.getTime());
                         Log.i("ManzoloControllo menu", "Controllo ordine");
                         Ordine ordine = new Ordine();
                         DbNotificheAdapter dbNotificheAdapter = new DbNotificheAdapter(NotificationService.this);
@@ -96,11 +109,16 @@ public class NotificationService extends Service {
                             dbNotificheAdapter.open();
                             dbNotificheAdapter.createNotification(formattedDate);
                             dbNotificheAdapter.close();
+                        } else {
+                            Log.i("ManzoloControllo", "Ordine non disponibile o non aperto o già notificato");
+                            return;
                         }
 
                     } else {
-                        Log.i("ManzoloControllo orario", "Non e' il momento di controllare");
+                        Log.i("ManzoloControllo orario", "Per oggi non si controlla");
+                        CheckNotificationService.stopService();
                     }
+
                     stopSelf();
                 }
             };
@@ -110,6 +128,7 @@ public class NotificationService extends Service {
             //return Service.START_STICKY;
             return null;
         }
+
 
         /**
          * * In here you should interpret whatever you fetched in doInBackground

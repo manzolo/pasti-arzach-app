@@ -18,7 +18,9 @@ public class Ordine {
             setListaPiatti(new Internet(ArzachUrls.MENU_DAY_PAGE).getJSONArray());
 
         } catch (Exception e) {
-            new Exception("Impossibile accedere allo stato dell'ordine");
+            setStato("-1");
+            setMessaggio("Impossibile accedere al server arzach");
+            setListaPiatti(new JSONArray());
         }
 
     }

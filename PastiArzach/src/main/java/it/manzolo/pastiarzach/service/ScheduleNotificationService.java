@@ -26,7 +26,6 @@ public class ScheduleNotificationService extends Service {
      * you * probably won't, either.
      */
     private void handleIntent(Intent intent) {
-        Log.i("ManzoloScheduleService", "Start");
         // do the actual work, in a separate thread
         new PollTask().execute();
     }
@@ -55,7 +54,7 @@ public class ScheduleNotificationService extends Service {
                     ScheduleOptions.INTERVAL = ScheduleOptions.DEFAULT_INTERVAL;
 
                     PendingIntent pi = PendingIntent.getService(ScheduleNotificationService.this, 0,
-                            new Intent(ScheduleNotificationService.this, CheckNotificationService.class),PendingIntent.FLAG_UPDATE_CURRENT);
+                            new Intent(ScheduleNotificationService.this, CheckNotificationService.class), PendingIntent.FLAG_UPDATE_CURRENT);
                     AlarmManager am = (AlarmManager) ScheduleNotificationService.this.getSystemService(ScheduleNotificationService.this.ALARM_SERVICE);
                     am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                             AlarmManager.INTERVAL_DAY, pi);
@@ -101,6 +100,7 @@ public class ScheduleNotificationService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("ManzoloScheduleService", "Start");
         handleIntent(intent);
         return START_NOT_STICKY;
     }

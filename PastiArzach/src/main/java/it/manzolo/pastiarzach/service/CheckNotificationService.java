@@ -10,6 +10,10 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.Date;
+
+import it.manzolo.utils.DateFunctions;
+
 
 public class CheckNotificationService extends Service {
     static PollTask pollTask;
@@ -42,7 +46,6 @@ public class CheckNotificationService extends Service {
      * you * probably won't, either.
      */
     private void handleIntent(Intent intent) {
-        Log.i("ManzoloCheckNotification", "Handle Service");
         // do the actual work, in a separate thread
         pollTask = new PollTask();
         pollTask.execute();
@@ -79,7 +82,20 @@ public class CheckNotificationService extends Service {
                     }
                     */
                     int day = calendar.get(Calendar.DAY_OF_WEEK);
-                    if (day == Calendar.THURSDAY || day == Calendar.TUESDAY) {
+                    int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                    int minute = Calendar.getInstance().get(Calendar.MINUTE);
+
+                    Date oraFine = DateFunctions.parseDate(ScheduleOptions.INTERVAL_ORA_FINE + ":" + ScheduleOptions.INTERVAL_MINUTO_FINE);
+                    Date oraInizio = DateFunctions.parseDate(ScheduleOptions.INTERVAL_ORA_INIZIO + ":" + ScheduleOptions.INTERVAL_MINUTO_INIZIO);
+
+                    Date now = DateFunctions.parseDate(hour + ":" + minute);
+                    if (now.after(oraFine)) {
+                        Log.i("ManzoloControllo orario", "E' già passato il momento di controllare");
+                        stopService();
+                        return;
+                    }
+
+                    if (day == Calendar.THURSDAY || day == Calendar.TUESDAY && oraInizio.before(now) && oraFine.after(now)) {
                         if (ScheduleOptions.INTERVAL > 0) {
                             Log.i("ManzoloControllo", "Controllo schedulato ogni " + ScheduleOptions.INTERVAL + " minuti");
                             am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -92,7 +108,6 @@ public class CheckNotificationService extends Service {
                         CheckNotificationService.stopService();
                     }
 
-
                     stopSelf();
                 }
             };
@@ -102,6 +117,7 @@ public class CheckNotificationService extends Service {
 
             return null;
         }
+
 
         /**
          * * In here you should interpret whatever you fetched in doInBackground
@@ -136,6 +152,7 @@ public class CheckNotificationService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("ManzoloCheckNotificationService", "Start");
         handleIntent(intent);
         return START_NOT_STICKY;
     }
