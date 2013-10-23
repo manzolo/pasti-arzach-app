@@ -1,4 +1,4 @@
-package it.manzolo.utils;
+package it.manzolo.pastiarzach;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,8 +10,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import it.manzolo.pastiarzach.ArzachUrls;
-import it.manzolo.pastiarzach.R;
+import it.manzolo.utils.Internet;
 
 public class UpdateNotification {
     private Context context;

@@ -35,13 +35,13 @@ import java.util.TimerTask;
 
 import it.manzolo.pastiarzach.ArzachUrls;
 import it.manzolo.pastiarzach.Ordine;
+import it.manzolo.pastiarzach.Parameters;
 import it.manzolo.pastiarzach.R;
+import it.manzolo.pastiarzach.UpdateNotification;
 import it.manzolo.pastiarzach.service.NetworkChangeReceiver;
 import it.manzolo.pastiarzach.service.NotificationService;
 import it.manzolo.utils.Internet;
-import it.manzolo.utils.Parameters;
 import it.manzolo.utils.ToolTip;
-import it.manzolo.utils.UpdateNotification;
 
 public class MainActivity extends Activity {
 

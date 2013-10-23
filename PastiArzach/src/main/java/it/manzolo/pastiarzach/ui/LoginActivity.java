@@ -39,12 +39,12 @@ import java.util.Locale;
 import it.manzolo.pastiarzach.ArzachUrls;
 import it.manzolo.pastiarzach.Dipendente;
 import it.manzolo.pastiarzach.Ordine;
+import it.manzolo.pastiarzach.Parameters;
 import it.manzolo.pastiarzach.PrezziPasti;
 import it.manzolo.pastiarzach.R;
 import it.manzolo.pastiarzach.service.CheckNotificationService;
 import it.manzolo.utils.Internet;
 import it.manzolo.utils.MessageBox;
-import it.manzolo.utils.Parameters;
 import it.manzolo.utils.ToolTip;
 
 public class LoginActivity extends Activity {
