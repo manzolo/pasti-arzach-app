@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.manzolo.pastiarzach"
     android:versionCode="1"
-    android:versionName="1.2020">
+    android:versionName="1.2021">
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -60,11 +60,11 @@
         <service android:name="it.manzolo.pastiarzach.service.CheckNotificationService"></service>
 
 
-        <receiver android:name="it.manzolo.pastiarzach.service.NetworkChangeReceiver">
+        <!--<receiver android:name="it.manzolo.pastiarzach.service.NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <service android:name="it.manzolo.pastiarzach.service.NotificationService" />
 

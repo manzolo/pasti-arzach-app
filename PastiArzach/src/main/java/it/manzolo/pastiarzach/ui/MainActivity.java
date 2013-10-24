@@ -50,6 +50,7 @@ public class MainActivity extends Activity {
     TextView tvConnectionStatus;
     LinearLayout messageContext;
     static final int MINUTI_CONTROLLO_MENU = 10;
+    private final BroadcastReceiver networkChangeReceiver = new NetworkChangeReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,7 @@ public class MainActivity extends Activity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitNetwork().build();
         StrictMode.setThreadPolicy(policy);
+
 
         setContentView(R.layout.activity_main);
         //Si controlla la presenza di nuove versioni della app
@@ -239,9 +241,20 @@ public class MainActivity extends Activity {
         onActivityResume();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        //Si deregistra il receiver se cambia la connessione
+        unregisterReceiver(networkChangeReceiver);
+    }
 
     private void onActivityResume() {
         try {
+            //Si registra il receiver se cambia la connessione
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+            registerReceiver(networkChangeReceiver, filter);
+
             //Si fa partire il controllo ogni x minuti per controllare se il menu e' disponibile o meno
             SharedPreferences prefs = PreferenceManager
                     .getDefaultSharedPreferences(this);
