@@ -2,6 +2,7 @@ package it.manzolo.pastiarzach;
 
 import org.json.JSONObject;
 
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
 import it.manzolo.pastiarzach.service.NetworkChangeReceiver;
 import it.manzolo.utils.Internet;
 

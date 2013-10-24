@@ -36,12 +36,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import it.manzolo.pastiarzach.ArzachUrls;
 import it.manzolo.pastiarzach.Dipendente;
 import it.manzolo.pastiarzach.Ordine;
-import it.manzolo.pastiarzach.Parameters;
 import it.manzolo.pastiarzach.PrezziPasti;
 import it.manzolo.pastiarzach.R;
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
+import it.manzolo.pastiarzach.parameters.Parameters;
 import it.manzolo.pastiarzach.service.CheckNotificationService;
 import it.manzolo.utils.Internet;
 import it.manzolo.utils.MessageBox;
@@ -52,6 +52,7 @@ public class LoginActivity extends Activity {
     static final String SECONDO = "secondo";
     static final String CONTORNO = "contorno";
     static final String DOLCE = "dolce";
+    static boolean prezziAvailable = false;
     PrezziPasti prezziPasti;
 
     List<NameValuePair> pietanze = new ArrayList<NameValuePair>();
@@ -82,7 +83,13 @@ public class LoginActivity extends Activity {
         //Si stoppa la notifica per oggi
         Log.i("ManzoloNessuna notifica", "Menu visionato dall'utente");
         CheckNotificationService.stopService();
-        prezziPasti = new PrezziPasti();
+        try {
+            prezziPasti = new PrezziPasti();
+            prezziAvailable = true;
+        } catch (Exception e) {
+            new ToolTip(this, "Impossibile accedere al listino prezzi");
+            prezziAvailable = false;
+        }
         generateMenu();
 
     }
@@ -173,7 +180,10 @@ public class LoginActivity extends Activity {
                         ((TextView) tv).setOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                controllaPrezzo();
+                                if (prezziAvailable) {
+                                    controllaPrezzo();
+                                }
+
                             }
                         });
                     }

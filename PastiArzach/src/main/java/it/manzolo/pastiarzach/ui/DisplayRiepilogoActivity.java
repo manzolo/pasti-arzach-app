@@ -32,10 +32,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import it.manzolo.pastiarzach.ArzachUrls;
 import it.manzolo.pastiarzach.Dipendente;
 import it.manzolo.pastiarzach.Ordine;
 import it.manzolo.pastiarzach.R;
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
 import it.manzolo.utils.Internet;
 import it.manzolo.utils.MessageBox;
 import it.manzolo.utils.ToolTip;

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
 import it.manzolo.utils.Internet;
 
 class MappaPrezzoPasti {
@@ -28,7 +29,7 @@ public class PrezziPasti {
     private JSONArray jsonArray;
     private List<MappaPrezzoPasti> mappaprezzopasti = new ArrayList<MappaPrezzoPasti>();
 
-    public PrezziPasti() {
+    public PrezziPasti() throws Exception {
         try {
             jsonArray = new Internet(ArzachUrls.PREZZI_PASTO_PAGE)
                     .getJSONArray();
@@ -44,11 +45,11 @@ public class PrezziPasti {
                     mappa.prezzo = Float.parseFloat(jsonObject.get("prezzo").toString());
                     mappaprezzopasti.add(mappa);
                 } catch (JSONException e) {
-                    new Exception("Impossibile decodificare il listino prezzi");
+                    throw new Exception("Impossibile decodificare il listino prezzi");
                 }
             }
         } catch (Exception e) {
-            new Exception("Impossibile accedere al listino prezzi");
+            throw new Exception("Impossibile accedere al listino prezzi");
         }
     }
 

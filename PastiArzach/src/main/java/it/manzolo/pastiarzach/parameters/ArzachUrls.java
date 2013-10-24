@@ -1,4 +1,4 @@
-package it.manzolo.pastiarzach;
+package it.manzolo.pastiarzach.parameters;
 
 public class ArzachUrls {
 

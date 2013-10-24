@@ -3,6 +3,7 @@ package it.manzolo.pastiarzach;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
 import it.manzolo.utils.Internet;
 
 public class Ordine {

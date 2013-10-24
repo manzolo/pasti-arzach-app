@@ -1,4 +1,4 @@
-package it.manzolo.pastiarzach;
+package it.manzolo.pastiarzach.parameters;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+
+import it.manzolo.pastiarzach.Dipendente;
 
 public class Parameters {
     private Context context;

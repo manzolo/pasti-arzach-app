@@ -33,11 +33,11 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import it.manzolo.pastiarzach.ArzachUrls;
 import it.manzolo.pastiarzach.Ordine;
-import it.manzolo.pastiarzach.Parameters;
 import it.manzolo.pastiarzach.R;
 import it.manzolo.pastiarzach.UpdateNotification;
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
+import it.manzolo.pastiarzach.parameters.Parameters;
 import it.manzolo.pastiarzach.service.NetworkChangeReceiver;
 import it.manzolo.pastiarzach.service.NotificationService;
 import it.manzolo.utils.Internet;

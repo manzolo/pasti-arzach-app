@@ -10,10 +10,12 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
+import it.manzolo.pastiarzach.parameters.ArzachUrls;
 import it.manzolo.utils.Internet;
 
 public class UpdateNotification {
     private Context context;
+    protected static final int NOTIFICATION_NEWVERSION_ID = 990;
 
     public UpdateNotification(Context ctx) {
         try {
@@ -68,7 +70,7 @@ public class UpdateNotification {
         notificationBuilder.setDefaults(Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS | Notification.DEFAULT_VIBRATE);
         //notificationBuilder.setLights(Color.GRAY, 100, 100);
         notificationBuilder.setAutoCancel(true);
-        notificationManager.notify(NotificationParameters.NOTIFICATION_NEWVERSION_ID, notificationBuilder.build());
+        notificationManager.notify(NOTIFICATION_NEWVERSION_ID, notificationBuilder.build());
 
     }
 
