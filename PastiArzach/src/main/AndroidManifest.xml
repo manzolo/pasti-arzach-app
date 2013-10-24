@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.manzolo.pastiarzach"
     android:versionCode="1"
-    android:versionName="1.2011">
+    android:versionName="1.2020">
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -54,7 +54,9 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="it.manzolo.pastiarzach.service.ScheduleNotificationService" android:enabled="true"></service>
+        <service
+            android:name="it.manzolo.pastiarzach.service.ScheduleNotificationService"
+            android:enabled="true"></service>
         <service android:name="it.manzolo.pastiarzach.service.CheckNotificationService"></service>
 
 

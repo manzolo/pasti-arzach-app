@@ -159,7 +159,7 @@ public class MainActivity extends Activity {
                 new ToolTip(this, "Inserisci prima la matricola");
                 return;
             }
-            // Log.i(MainActivity.class.getName(), message);
+
             if (NetworkChangeReceiver.ACTIVE) {
                 intent.putExtra("matricola", matricola);
                 startActivity(intent);

@@ -79,6 +79,9 @@ public class LoginActivity extends Activity {
             finish();
             return;
         }
+        //Si stoppa la notifica per oggi
+        Log.i("ManzoloNessuna notifica", "Menu visionato dall'utente");
+        CheckNotificationService.stopService();
         prezziPasti = new PrezziPasti();
         generateMenu();
 
@@ -134,9 +137,6 @@ public class LoginActivity extends Activity {
                     if (ordine.isAperto()) {
                         tv = new CheckBox(this);
                         ((CheckBox) tv).setTextSize(15);
-                        //Si stoppa la notifica per oggi
-                        Log.i("ManzoloNessuna notifica", "Menu visionato dall'utente");
-                        CheckNotificationService.stopService();
                     } else {
                         tv = new TextView(this);
                         ((TextView) tv).setTextSize(15);
