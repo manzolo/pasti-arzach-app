@@ -59,6 +59,8 @@
             android:enabled="true"></service>
         <service android:name="it.manzolo.pastiarzach.service.CheckNotificationService"></service>
 
+        <service android:name="it.manzolo.pastiarzach.service.NotificationService" />
+
 
         <!--<receiver android:name="it.manzolo.pastiarzach.service.NetworkChangeReceiver">
             <intent-filter>
@@ -66,7 +68,6 @@
             </intent-filter>
         </receiver>-->
 
-        <service android:name="it.manzolo.pastiarzach.service.NotificationService" />
 
     </application>
 
