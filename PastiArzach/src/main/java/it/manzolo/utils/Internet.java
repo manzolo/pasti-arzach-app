@@ -6,10 +6,12 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -76,6 +78,7 @@ public class Internet {
         HttpGet httpGet = new HttpGet(getUrl());
 
         HttpParams httpParameters = new BasicHttpParams();
+        //httpParameters.setParameter("")
         // Set the timeout in milliseconds until a connection is established.
         // The default value is zero, that means the timeout is not used.
         int timeoutConnection = getTimeoutConnection();
@@ -85,6 +88,11 @@ public class Internet {
         int timeoutSocket = getTimeoutSocket();
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
         DefaultHttpClient client = new DefaultHttpClient(httpParameters);
+        /*In caso di proxy
+        HttpHost proxy = new HttpHost("proxy.domain.com", 8080);
+        client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        */
+
 
         try {
             HttpResponse response = client.execute(httpGet);
