@@ -87,12 +87,11 @@ public class Internet {
         // in milliseconds which is the timeout for waiting for data.
         int timeoutSocket = getTimeoutSocket();
         HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
-        DefaultHttpClient client = new DefaultHttpClient(httpParameters);
-        /*In caso di proxy
-        HttpHost proxy = new HttpHost("proxy.domain.com", 8080);
-        client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-        */
 
+        DefaultHttpClient client = new DefaultHttpClient(httpParameters);
+        /*In caso di proxy*/
+        //HttpHost proxy = new HttpHost("host", port);
+        //client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
 
         try {
             HttpResponse response = client.execute(httpGet);
