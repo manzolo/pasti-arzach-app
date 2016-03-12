@@ -329,7 +329,8 @@ public class MainActivity extends Activity {
     private void writeMessages(int retCode, String message) {
         // Si scrivono i messaggi colorati a seconda del retCode
         TextView tv = new TextView(this);
-        tv.setId(1);
+
+        tv.setId(R.id.textview_menu_scelta);
         if (retCode == -3) {
             tv.setTextSize(25);
             tv.setTextColor(Color.rgb(150, 150, 150));

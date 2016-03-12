@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/welcome"
         android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/lblsaldo"
         android:text="text" />
 
     <TextView
