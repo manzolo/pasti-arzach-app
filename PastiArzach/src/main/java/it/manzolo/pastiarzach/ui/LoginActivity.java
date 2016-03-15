@@ -3,12 +3,14 @@ package it.manzolo.pastiarzach.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -29,17 +31,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import it.manzolo.pastiarzach.Dipendente;
 import it.manzolo.pastiarzach.Ordine;
 import it.manzolo.pastiarzach.PrezziPasti;
 import it.manzolo.pastiarzach.R;
+import it.manzolo.pastiarzach.database.DbNotificheAdapter;
 import it.manzolo.pastiarzach.parameters.ArzachUrls;
 import it.manzolo.pastiarzach.parameters.Parameters;
 import it.manzolo.pastiarzach.service.CheckNotificationService;
@@ -55,7 +69,7 @@ public class LoginActivity extends Activity {
     static boolean prezziAvailable = false;
     PrezziPasti prezziPasti;
 
-    List<NameValuePair> pietanze = new ArrayList<NameValuePair>();
+    List<ContentValues> pietanze = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +137,6 @@ public class LoginActivity extends Activity {
         return state;
 
     }
-
     private void generateMenu() {
         LinearLayout rl = (LinearLayout) findViewById(R.id.scrollLinearLayout);
         rl.removeAllViews();
@@ -150,7 +163,9 @@ public class LoginActivity extends Activity {
                     }
 
                     Integer pietanzaID = Integer.parseInt(jsonObject.getString("pasto_id"));
-                    pietanze.add(new BasicNameValuePair("id", jsonObject.getString("pasto_id")));
+                    ContentValues values=new ContentValues();
+                    values.put("id",jsonObject.getString("pasto_id"));
+                    pietanze.add(values);
                     tv.setId(pietanzaID);
 
                     Boolean primo = jsonObject.getString(PRIMO).equals("1");
@@ -217,7 +232,6 @@ public class LoginActivity extends Activity {
             //Se non si e' autorizzati si da l'avviso
             new ToolTip(this, "Impossibile contattare il server Arzach", true);
             finish();
-            return;
         }
     }
 
@@ -252,18 +266,15 @@ public class LoginActivity extends Activity {
 
 
                         // Si crea una connessione sulla pagina che permette l'ordine
-                        HttpClient httpclient = new DefaultHttpClient();
-                        HttpPost httppost = new HttpPost(ArzachUrls.MENU_ORDINA_PAGE);
                         // Si controlla che sia stato selezionato almeno un piatto
                         try {
                             //Si controlla quanti piatti sono stati selezionati
-                            List<NameValuePair> selezionati = new ArrayList<NameValuePair>();
-
-                            for (NameValuePair pietanza : pietanze) {
+                            List<Pair<String, String>> selezionati = new ArrayList<>();
+                            for (ContentValues pietanza : pietanze) {
                                 CheckBox elemento = (CheckBox) findViewById(Integer
-                                        .parseInt(pietanza.getValue()));
+                                        .parseInt(pietanza.get("id").toString()));
                                 if (elemento.isChecked()) {
-                                    selezionati.add(new org.apache.http.message.BasicNameValuePair("options[]", pietanza.getValue()));
+                                    selezionati.add(new Pair<>("options[]", pietanza.get("id").toString()));
                                 }
                             }
                             if (selezionati.size() <= 0) {
@@ -276,13 +287,21 @@ public class LoginActivity extends Activity {
                             //Si prende la data del giorno
                             String giorno = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALY).format(new Date());
                             //Log.i("ordina", giorno);
-                            selezionati.add(new BasicNameValuePair("giorno", giorno));
-                            selezionati.add(new BasicNameValuePair("dipendente_id", Dipendente.ID));
-                            httppost.setEntity(new UrlEncodedFormEntity(selezionati));
-                            //Si esegue la POST alla pagina che raccoglie gli ordini
-                            httpclient.execute(httppost);
+                            selezionati.add(new Pair<>("dipendente_id", Dipendente.ID));
+                            selezionati.add(new Pair<>("giorno",giorno));
 
-                            /*
+
+                            Internet postOrdinaInternet = new Internet(ArzachUrls.MENU_ORDINA_PAGE);
+                            //Si esegue la POST alla pagina che raccoglie gli ordini
+                            try {
+                                postOrdinaInternet.performPostCall(selezionati);
+                            } catch (Exception e) {
+                                new MessageBox(LoginActivity.this, "Attenzione",
+                                        "Non e' stato possibile ordinare il pasto, errore nell'invio dell'ordine, riprovare!");
+                                return;
+                            }
+
+
                             //Si ferma la notifica per oggi
                             Calendar calendar = Calendar.getInstance();
                             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALY);
@@ -298,19 +317,17 @@ public class LoginActivity extends Activity {
                                 dbNotificheAdapter.createNotification(formattedDate);
                                 dbNotificheAdapter.close();
                             }
-                            */
-                        } catch (ClientProtocolException e) {
-                            new MessageBox(
-                                    LoginActivity.this,
-                                    "Attenzione",
-                                    "Non e' stato possibile ordinare il pasto, controllare di essere connessi a internet");
-                        } catch (IOException e) {
+
+                        }catch (Exception e) {
                             new MessageBox(LoginActivity.this, "Attenzione",
                                     "Non e' stato possibile ordinare il pasto, errore nell'invio, riprovare!");
+                            return;
                         }
+
 
                         //Si apre la maschera di riepilogo
                         Intent intent = new Intent(LoginActivity.this, DisplayRiepilogoActivity.class);
+
                         startActivity(intent);
                     }
                 })
@@ -325,14 +342,14 @@ public class LoginActivity extends Activity {
     public void controllaPrezzo() {
         // SI chiede conferma se si vuole ordinare
         //Si controlla quanti piatti sono stati selezionati
-        List<NameValuePair> selezionati = new ArrayList<NameValuePair>();
+        List<ContentValues> selezionati = new ArrayList<>();
         int numprimo = 0;
         int numsecondo = 0;
         int numcontorno = 0;
         int numdolce = 0;
 
-        for (NameValuePair pietanza : pietanze) {
-            CheckBox elemento = (CheckBox) findViewById(Integer.parseInt(pietanza.getValue()));
+        for (ContentValues pietanza : pietanze) {
+            CheckBox elemento = (CheckBox) findViewById(Integer.parseInt(pietanza.get("id").toString()));
             if (elemento.isChecked()) {
                 if (elemento.getTag().toString().equals(PRIMO)) {
                     numprimo = numprimo + 1;

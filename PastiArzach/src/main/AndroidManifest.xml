@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.manzolo.pastiarzach"
     android:versionCode="1"
-    android:versionName="1.3000">
+    android:versionName="1.3001">
 
 <uses-sdk
         android:minSdkVersion="8"
@@ -27,10 +27,10 @@
         </activity>
         <activity
             android:name="it.manzolo.pastiarzach.ui.LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login"/>
         <activity
             android:name="it.manzolo.pastiarzach.ui.DisplayRiepilogoActivity"
-            android:label="@string/title_activity_display_riepilogo"></activity>
+            android:label="@string/title_activity_display_riepilogo"/>
         <activity
             android:name="it.manzolo.pastiarzach.ui.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -56,8 +56,8 @@
 
         <service
             android:name="it.manzolo.pastiarzach.service.ScheduleNotificationService"
-            android:enabled="true"></service>
-        <service android:name="it.manzolo.pastiarzach.service.CheckNotificationService"></service>
+            android:enabled="true"/>
+        <service android:name="it.manzolo.pastiarzach.service.CheckNotificationService"/>
 
         <service android:name="it.manzolo.pastiarzach.service.NotificationService" />
 
