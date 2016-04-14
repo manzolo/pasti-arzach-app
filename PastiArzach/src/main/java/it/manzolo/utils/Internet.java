@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -93,7 +95,12 @@ public class Internet {
         StringBuilder chaine = new StringBuilder("");
         try{
             URL url = new URL(getUrl());
+
+            /* In caso di proxy
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("prox59495yhttp.comune.intranet", 8080));
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection(proxy);*/
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+
             connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
